@@ -33,6 +33,12 @@ public final class Constants {
         public static final int kREAR_LEFT_TURNING_CAN_ID = 5;
         public static final int kFRONT_RIGHT_TURNING_CAN_ID = 7;
         public static final int kREAR_RIGHT_TURNING_CAN_ID = 9;
+
+        public static final int kSHOOTER_LEFT_MOTOR_ID = 10;
+        public static final int kSHOOTER_RIGHT_MOTOR_ID = 11;
+
+        public static final int kINTAKE_LIFT_MOTOR_ID = 20;
+        public static final int kINTAKE_SPIN_MOTOR_ID = 21;
     }
 
     public static final class DriveConstants {
@@ -118,6 +124,10 @@ public final class Constants {
 
     }
 
+    public static class ShooterConstants {
+    public static final boolean kIS_INVERTED = true;
+        
+    }
     public static class OperatorConstants {
 
         public static final int kDRIVER_CONTROLLER_PORT = 0;
