@@ -13,11 +13,13 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Commands.AutoControl;
 import frc.robot.Commands.AutoSelect;
+import frc.robot.Commands.NoteIntake;
 import frc.robot.Commands.SwerveDriveController;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Libraries.ConsoleAuto;
 import frc.robot.Subsystems.AutonomousSubsystem;
 import frc.robot.Subsystems.Drive;
+import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.AutonomousSubsystem.Paths;
 
@@ -29,6 +31,7 @@ import frc.robot.Subsystems.AutonomousSubsystem.Paths;
 public class RobotContainer {
     private final Drive m_drive = new Drive();
     private final Shooter m_Shooter = new Shooter();
+    private final Intake m_intake = new Intake();
 
     private final CommandXboxController m_driverController = new CommandXboxController(
             OperatorConstants.kDRIVER_CONTROLLER_PORT);
@@ -72,6 +75,26 @@ public class RobotContainer {
         m_driverController
                 .a()
                 .onTrue(m_swerveDriveController);
+
+        m_driverController
+                .b()
+                .whileTrue(new NoteIntake(m_intake)
+                        .unless(() -> m_intake.isNoteIn())
+                );
+
+        m_driverController
+                .x()
+                .whileTrue(Commands.run(() -> m_intake.intakeNote(), m_intake)
+                        .until(() -> m_intake.isNoteIn())
+                        .andThen(() -> m_intake.stopIntake(), m_intake)
+                        .unless(() -> m_intake.isNoteIn())
+                );
+
+        m_driverController
+                .y()
+                .whileTrue(m_intake.intakeIn()
+                        .unless(() -> m_intake.isNoteIn())
+                );
     }
 
     public Command getAutoSelect() {

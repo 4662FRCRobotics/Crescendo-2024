@@ -10,6 +10,8 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIDConstants;
 
@@ -28,13 +30,16 @@ public class Intake extends SubsystemBase {
   // any code from me, further testing/research is needed
   private SparkLimitSwitch m_forwardLimit;
   private SparkLimitSwitch m_reverseLimit;
+  private SparkLimitSwitch m_isNoteIn;
 
   public Intake() {
     m_spinMotor = new CANSparkMax(CANIDConstants.kINTAKE_SPIN_MOTOR_ID, MotorType.kBrushless);
     m_liftMotor = new CANSparkMax(CANIDConstants.kINTAKE_LIFT_MOTOR_ID, MotorType.kBrushless);
 
-    m_spinMotor.setIdleMode(IdleMode.kCoast);
+    m_spinMotor.setIdleMode(IdleMode.kBrake);
     m_liftMotor.setIdleMode(IdleMode.kBrake);
+
+    m_isNoteIn = m_spinMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
 
     m_forwardLimit = m_liftMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
     m_reverseLimit = m_liftMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
@@ -58,6 +63,10 @@ public class Intake extends SubsystemBase {
     m_spinMotor.set(-1);
   }
 
+  public boolean isNoteIn(){
+    return m_isNoteIn.isPressed();
+  }
+
   // the reason for .2 is to test the limit switch before having it go fast
   public void dropIntake() {
     m_liftMotor.set(.2);
@@ -69,5 +78,11 @@ public class Intake extends SubsystemBase {
 
   public void retractIntake() {
     m_liftMotor.set(-.2);
+  }
+
+  public Command intakeIn() {
+    return  Commands.run(() -> intakeNote(), this)
+    .until(() -> isNoteIn())
+    .andThen(() -> stopIntake(), this);
   }
 }
