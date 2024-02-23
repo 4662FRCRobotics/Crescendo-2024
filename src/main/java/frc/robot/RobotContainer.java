@@ -96,7 +96,7 @@ public class RobotContainer {
                 .whileTrue(Commands.sequence(
                         m_intake.deployIntake(),
                         m_intake.intakeInLim(),
-                        m_intake.parkIntake()
+                        m_intake.parkIntakeLoaded()
                         )
                 )
                 ;
