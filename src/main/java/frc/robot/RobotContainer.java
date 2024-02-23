@@ -10,6 +10,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Commands.AutoControl;
 import frc.robot.Commands.AutoSelect;
@@ -92,8 +93,13 @@ public class RobotContainer {
 
         m_driverController
                 .y()
-                .whileTrue(m_intake.intakeInLim()
-                );
+                .whileTrue(Commands.sequence(
+                        m_intake.deployIntake(),
+                        m_intake.intakeInLim(),
+                        m_intake.parkIntake()
+                        )
+                )
+                ;
     }
 
     public Command getAutoSelect() {

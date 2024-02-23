@@ -68,7 +68,7 @@ public class Intake extends SubsystemBase {
   }
 
   // the reason for .2 is to test the limit switch before having it go fast
-  public void dropIntake() {
+  public void extendIntake() {
     m_liftMotor.set(.2);
   }
 
@@ -80,6 +80,13 @@ public class Intake extends SubsystemBase {
     m_liftMotor.set(-.2);
   }
 
+  private boolean isIntakeExtended() {
+    return m_forwardLimit.isPressed();
+  }
+
+  private boolean isIntakeRetracted() {
+    return m_reverseLimit.isPressed();
+  }
   public Command intakeIn() {
     return  Commands.run(() -> intakeNote(), this)
     .until(() -> isNoteIn())
@@ -90,4 +97,25 @@ public class Intake extends SubsystemBase {
     return intakeIn()
     .unless(() -> isNoteIn());
   }
+
+  public Command deployIntake() {
+    return Commands.run(() -> extendIntake(), this)
+    .until(() -> isIntakeExtended());
+  }
+
+  public Command deployIntakeEmpty() {
+    return deployIntake()
+    .unless(() -> isNoteIn() | isIntakeExtended());
+  }
+
+  public Command parkIntake() {
+    return Commands.run(() -> retractIntake(), this)
+    .until(() -> isIntakeRetracted());
+  }
+  public Command parkIntakeLoaded() {
+    return parkIntake()
+    .onlyIf(() -> isNoteIn());
+  }
+
+
 }
