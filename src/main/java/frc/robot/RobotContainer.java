@@ -92,8 +92,7 @@ public class RobotContainer {
 
         m_driverController
                 .y()
-                .whileTrue(m_intake.intakeIn()
-                        .unless(() -> m_intake.isNoteIn())
+                .whileTrue(m_intake.intakeInLim()
                 );
     }
 

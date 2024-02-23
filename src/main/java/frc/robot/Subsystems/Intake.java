@@ -85,4 +85,9 @@ public class Intake extends SubsystemBase {
     .until(() -> isNoteIn())
     .andThen(() -> stopIntake(), this);
   }
+
+  public Command intakeInLim() {
+    return intakeIn()
+    .unless(() -> isNoteIn());
+  }
 }
