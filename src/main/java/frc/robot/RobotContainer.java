@@ -94,7 +94,7 @@ public class RobotContainer {
         m_driverController
                 .y()
                 .whileTrue(Commands.sequence(
-                        m_intake.deployIntake(),
+                        m_intake.deployIntakeEmpty(),
                         m_intake.intakeInLim(),
                         m_intake.parkIntakeLoaded()
                         )
